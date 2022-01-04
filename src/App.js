@@ -5,7 +5,8 @@ import ShopPage from "./pages/shop/shop.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import "./App.css";
 import Header from "./components/header/header.component";
-import { auth } from "./firebase/firebase.utils";
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import { onSnapshot } from "firebase/firestore";
 
 class App extends React.Component {
   constructor() {
@@ -17,9 +18,24 @@ class App extends React.Component {
   //this is open subscription between the app and firebase, we also have to unsubscribe to avoid memory leak
   unsubscribeFromAuth = null;
   componentDidMount() {
-    this.unsubscribeFromAuth = auth.onAuthStateChanged((user) => {
-      this.setState({ currentUser: user });
-      console.log(user);
+    //async await becasue we are waiting the result from createUserProfileDocument (must use or code get broken)
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+      if (userAuth) {
+        // fire function to save user to database
+        const userRef = await createUserProfileDocument(userAuth);
+        //using onSnapshot will send us information about data being stored in DB, we get back snapshot object
+        onSnapshot(userRef, (snapShot) => {
+          this.setState({
+            currentUser: {
+              id: snapShot.id,
+              ...snapShot.data(),
+            },
+          });
+          console.log(this.state);
+        });
+      } else {
+        this.setState({ currentUser: userAuth });
+      }
     });
   }
 
@@ -36,6 +52,8 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        {/* pass current user as prop to check if there is any current user, if
+        yes, change header to signout */}
         <Header currentUser={this.state.currentUser} />
         <Switch>
           <Route exact path="/" component={HomePage} />
