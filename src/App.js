@@ -20,6 +20,7 @@ class App extends React.Component {
   componentDidMount() {
     //async await becasue we are waiting the result from createUserProfileDocument (must use or code get broken)
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+      //Check if there is any user signing in
       if (userAuth) {
         // fire function to save user to database
         const userRef = await createUserProfileDocument(userAuth);

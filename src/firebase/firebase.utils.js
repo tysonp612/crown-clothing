@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -15,6 +20,7 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 //using async because we are making an API request
+
 export const auth = getAuth();
 export const firestore = getFirestore();
 export const createUserProfileDocument = async (userAuth, additionalData) => {
@@ -24,11 +30,11 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   //1.2 create a reference to database location with user uid, the data is not stored yet, but it creates a reference
   // no await userRef because creating userRef doesnt send any any request to backend, it simply creates a reference object, not retrieving information
   const userRef = doc(firestore, `user/${userAuth.uid}`);
-  console.log(userAuth, userRef);
   //2. IF there is an user signing in, check if user has already saved in database using snapshot
   //Snapshot only shows data in actual database, use snapshot to check if user has already been stored
   const snapShot = await getDoc(userRef);
   if (!snapShot.exists()) {
+    //if no snapshot exists, then create user in DB
     //if no user found, store in database using document object not snapshot (userRef)
     const { displayName, email } = userAuth;
     const createdAt = Date.now();
@@ -44,7 +50,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
       console.log("Error creating user", error.message);
     }
   }
-  //return User reference for future use
+  //If user or snapshot has already existed, return User reference for future use
   return userRef;
 };
 
