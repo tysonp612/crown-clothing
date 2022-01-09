@@ -7,18 +7,14 @@ import "./App.css";
 import Header from "./components/header/header.component";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 import { onSnapshot } from "firebase/firestore";
-
+import { connect } from "react-redux";
+import setCurrentUser from "./redux/user/user.actions";
 class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      currentUser: null,
-    };
-  }
   //this is open subscription between the app and firebase, we also have to unsubscribe to avoid memory leak
   unsubscribeFromAuth = null;
   componentDidMount() {
     //async await becasue we are waiting the result from createUserProfileDocument (must use or code get broken)
+    //these line below is to listen to any change of auth sate, then setState of signned in user acorrdingly
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       //Check if there is any user signing in
       if (userAuth) {
@@ -26,16 +22,11 @@ class App extends React.Component {
         const userRef = await createUserProfileDocument(userAuth);
         //using onSnapshot will send us information about data being stored in DB, we get back snapshot object
         onSnapshot(userRef, (snapShot) => {
-          this.setState({
-            currentUser: {
-              id: snapShot.id,
-              ...snapShot.data(),
-            },
-          });
-          console.log(this.state);
+          //Before, we use this.setState, but after we map dispatch to prop, we use prop as a function to set currentUser with this id and data
+          this.props.setCurrentUser({ id: snapShot.id, ...snapShot.data() });
         });
       } else {
-        this.setState({ currentUser: userAuth });
+        this.props.setCurrentUser(userAuth);
       }
     });
   }
@@ -55,7 +46,7 @@ class App extends React.Component {
       <div>
         {/* pass current user as prop to check if there is any current user, if
         yes, change header to signout */}
-        <Header currentUser={this.state.currentUser} />
+        <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/shop" component={ShopPage} />
@@ -65,5 +56,10 @@ class App extends React.Component {
     );
   }
 }
-
-export default App;
+//Set a function to props to replace setState
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  };
+};
+export default connect(null, mapDispatchToProps)(App);
