@@ -3,9 +3,12 @@ import "./header.styles.scss";
 import { Link } from "react-router-dom";
 import { auth } from "./../../firebase/firebase.utils";
 import { connect } from "react-redux";
+import CartIcon from "./../cart-icon/cart-icon.component";
 import { ReactComponent as Logo } from "./../../assets/crown.svg"; //This is a new special syntax when importing SVG in React. The ReactComponent import name is special and tells Create React App that you want a React component that renders an SVG, rather than its filenameUsing logo component by define this
+import CartDropdown from "./../cart-dropdown/cart-dropdown.component";
 
-const Header = (user) => {
+const Header = ({ currentUser }) => {
+  console.log(currentUser);
   return (
     <div className="header">
       <Link className="logo-container" to="/">
@@ -18,8 +21,8 @@ const Header = (user) => {
         <Link className="option" to="/contact">
           CONTACT
         </Link>
-        {user.currentUser ? (
-          <div className="option" onClick={() => auth.signOut(user)}>
+        {currentUser ? (
+          <div className="option" onClick={() => auth.signOut(currentUser)}>
             SIGN OUT
           </div>
         ) : (
@@ -27,7 +30,9 @@ const Header = (user) => {
             SIGN IN
           </Link>
         )}
+        <CartIcon />
       </div>
+      <CartDropdown></CartDropdown>
     </div>
   );
 };
@@ -35,5 +40,6 @@ const Header = (user) => {
 const mapStateToProps = (state) => {
   return { currentUser: state.user.currentUser };
 };
+
 //We have to connect Prop to the Component which receive state as prop, initially we pass state as prop to Header in App.js, but with redux, we don't pass anything as prop in parent component, we directly connect in child component
 export default connect(mapStateToProps)(Header);
