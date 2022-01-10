@@ -5,7 +5,7 @@ import { auth } from "./../../firebase/firebase.utils";
 import { connect } from "react-redux";
 import { ReactComponent as Logo } from "./../../assets/crown.svg"; //This is a new special syntax when importing SVG in React. The ReactComponent import name is special and tells Create React App that you want a React component that renders an SVG, rather than its filenameUsing logo component by define this
 
-const Header = (currentUser) => {
+const Header = (user) => {
   return (
     <div className="header">
       <Link className="logo-container" to="/">
@@ -18,12 +18,12 @@ const Header = (currentUser) => {
         <Link className="option" to="/contact">
           CONTACT
         </Link>
-        {currentUser ? (
-          <div className="option" onClick={() => auth.signOut(currentUser)}>
+        {user.currentUser ? (
+          <div className="option" onClick={() => auth.signOut(user)}>
             SIGN OUT
           </div>
         ) : (
-          <Link className="option" to="/registration">
+          <Link className="option" to="/signin">
             SIGN IN
           </Link>
         )}
