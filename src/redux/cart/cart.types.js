@@ -1,3 +1,4 @@
 export const CartActionTypes = {
   TOGGLE_CART_DROP_DOWN: "TOGGLE_CART_DROP_DOWN",
+  ADD_ITEMS_TO_CART: "ADD_ITEMS_TO_CART:",
 };
