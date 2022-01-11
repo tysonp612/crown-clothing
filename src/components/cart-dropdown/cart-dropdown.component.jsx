@@ -1,15 +1,25 @@
 import "./cart-dropdown.styles.scss";
 import React from "react";
 import CustomButton from "./../custom-button/custom-button.component";
-
-//extract cartToggleHidden as prop from this.props.cartToggleHidden as parameter, this will return true or false based on the state
-const CartDropdown = ({ cartToggleHidden }) => {
+import CartItem from "./../cart-item/cart-item.component";
+import { connect } from "react-redux";
+const CartDropdown = ({ items }) => {
+  console.log(items);
   return (
     <div className="cart-dropdown">
-      <div className="cart-items"></div>
+      <div className="cart-items">
+        {items.map((item) => (
+          //when pass data as prop,use format item={item}
+          <CartItem key={item.id} item={item}></CartItem>
+        ))}
+      </div>
+
       <CustomButton>GO TO CHECK OUT</CustomButton>
     </div>
   );
 };
 
-export default CartDropdown;
+const mapStateToProps = (state) => {
+  return { items: state.cart.cartItems };
+};
+export default connect(mapStateToProps)(CartDropdown);
