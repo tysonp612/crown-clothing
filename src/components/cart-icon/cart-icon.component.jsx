@@ -1,14 +1,15 @@
 import { react } from "react";
 import { ReactComponent as ShoppingIcon } from "./../../assets/shopping-bag.svg";
 import { toggleCartDropDown } from "./../../redux/cart/cart.actions";
+import { selectCartItemsCount } from "./../../redux/cart/cart.selector";
 import "./cart-icon.styles.scss";
 import { connect } from "react-redux";
-const CartIcon = ({ toggleCartDropDown }) => {
+const CartIcon = ({ toggleCartDropDown, itemCount }) => {
   return (
     //we use dispatch(function) in the component that we click to (cart-icon) to change the state to hidden:false
     <div className="cart-icon" onClick={toggleCartDropDown}>
       <ShoppingIcon className="shopping-icon" />
-      <span className="item-count">0</span>
+      <span className="item-count">{itemCount}</span>
     </div>
   );
 };
@@ -18,4 +19,11 @@ const mapDispatchToProps = (dispatch) => {
     toggleCartDropDown: () => dispatch(toggleCartDropDown()),
   };
 };
-export default connect(null, mapDispatchToProps)(CartIcon);
+const mapStateToProps = (state) => {
+  //use reduce to calculate total quantity in cart, this will accumulate every cartItem.quantity from 0
+  return {
+    //passing all the state in selector function, selector function then take the whole state and break it into smaller input selector
+    itemCount: selectCartItemsCount(state),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CartIcon);
