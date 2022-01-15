@@ -16,7 +16,9 @@ export const selectCartItems = createSelector(
   }
   //because we use input selector to create the output selector, we need to     +
 );
-
+export const selectCartHidden = createSelector([selectCart], (cart) => {
+  return cart.hidden;
+});
 export const selectCartItemsCount = createSelector(
   [selectCartItems],
   (cartItems) => {
