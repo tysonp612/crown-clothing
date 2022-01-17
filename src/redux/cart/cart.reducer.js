@@ -18,6 +18,14 @@ const cartReducer = (state = INITIAL_STATE, action) => {
         //we can use function in reducer to check condition
         cartItems: addMutipleItemsToCart(state.cartItems, action.payload),
       };
+    case CartActionTypes.CLEAR_ITEM_FROM_CART:
+      return {
+        ...state,
+        //filter the cartitem that does not match the payload id and keep that array, the item that matches with payload id will be filtered
+        cartItems: state.cartItems.filter(
+          (cartItem) => cartItem.id !== action.payload.id
+        ),
+      };
     default:
       return state;
   }
