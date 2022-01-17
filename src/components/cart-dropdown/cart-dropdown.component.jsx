@@ -5,19 +5,33 @@ import CartItem from "./../cart-item/cart-item.component";
 import { connect } from "react-redux";
 import { selectCartItems } from "./../../redux/cart/cart.selector";
 import { createStructuredSelector } from "reselect";
-
-const CartDropdown = ({ items }) => {
+import { withRouter } from "react-router-dom";
+import { toggleCartDropDown } from "./../../redux/cart/cart.actions";
+//if we don't want to set up map dispatch to props, an easier way is to pass "dispatch" in the parameter
+const CartDropdown = ({ items, history, dispatch }) => {
   console.log(items);
   return (
     <div className="cart-dropdown">
       <div className="cart-items">
-        {items.map((item) => (
-          //when pass data as prop,use format item={item}
-          <CartItem key={item.id} item={item}></CartItem>
-        ))}
+        {items.length ? (
+          items.map((item) => (
+            //when pass data as prop,use format item={item}
+            <CartItem key={item.id} item={item}></CartItem>
+          ))
+        ) : (
+          <span className="empty-message">Your cart is empty</span>
+        )}
       </div>
-
-      <CustomButton>GO TO CHECK OUT</CustomButton>
+      {/* as we use withRouter and we have assess to history, we use to button as we click to go to /checkout with the history of previous cartItem information */}
+      <CustomButton
+        onClick={() => {
+          history.push("/checkout");
+          //after passing dispatch in parameter, use dispatch(function) to use the function as a shortcut
+          dispatch(toggleCartDropDown());
+        }}
+      >
+        GO TO CHECK OUT
+      </CustomButton>
     </div>
   );
 };
@@ -25,4 +39,5 @@ const CartDropdown = ({ items }) => {
 const mapStateToProps = createStructuredSelector({
   items: selectCartItems,
 });
-export default connect(mapStateToProps)(CartDropdown);
+//using withRouter as higher function that take another function as parameter, we can have assess from history prop, and cartItems
+export default withRouter(connect(mapStateToProps)(CartDropdown));
