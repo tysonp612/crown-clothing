@@ -9,7 +9,6 @@ import { withRouter } from "react-router-dom";
 import { toggleCartDropDown } from "./../../redux/cart/cart.actions";
 //if we don't want to set up map dispatch to props, an easier way is to pass "dispatch" in the parameter
 const CartDropdown = ({ items, history, dispatch }) => {
-  console.log(items);
   return (
     <div className="cart-dropdown">
       <div className="cart-items">

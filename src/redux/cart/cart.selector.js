@@ -34,6 +34,7 @@ export const selectCartItemsCount = createSelector(
 export const selectCartTotal = createSelector(
   [selectCartItems],
   (cartItems) => {
+    console.log(cartItems);
     //USING cartItems (ARRAY) will return the main function, which is to reduce to get the total quantity, we do this so that application wont render again if the state doesn't change'
     return cartItems.reduce(
       (accumalatedQuantity, cartItem) =>
