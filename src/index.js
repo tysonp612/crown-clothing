@@ -6,12 +6,16 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./redux/store/store";
-
+import { store, persistor } from "./redux/store/store";
+import { PersistGate } from "redux-persist/integration/react";
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+      {/* the persistor is the persisted version of store in store.js */}
+      {/* This will allow persistGate to, once receive the store, also fire off actions will rehydrate the state when our app refreshes */}
+      <PersistGate persistor={persistor}>
+        <App />
+      </PersistGate>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")
