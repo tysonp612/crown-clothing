@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./collection.styles.scss";
 import { connect } from "react-redux";
+import { useParams } from "react-router-dom";
+import { changeShopParams } from "./../../redux/shop/shop.actions";
 import { selectCollection } from "./../../redux/shop/shop.selector";
 import CollectionItem from "../../components/collection-item/collection-item.component";
 
-const CollectionPage = ({ match }) => {
-  console.log(match);
+const CollectionPage = ({ match, collection, changeParams }) => {
+  let params = useParams();
+  console.log(collection);
+  useEffect(() => {
+    changeParams(params.collectionId);
+  });
   return (
     <div className="category">
       <h2>CATEGORY PAGE</h2>
@@ -13,16 +19,29 @@ const CollectionPage = ({ match }) => {
   );
 };
 
-// Explaining mapStateToProps:
-// In here, we are trying to extract match.params (hats/jackets) from the route/:collection, from then, we pass that into the selector,
-// Inside selector, it will get access to state.shopData, then it will find the JSON object containing the data that matches the match params,
-// then return that data in to the prop collection below.
-
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
+  console.log(state);
   return {
     //putting the (state) below is necessary because unlike other selectors, this selector needs a part of the state depending on the URL parameter
-    collection: selectCollection(ownProps.match.params.collectionId)(state),
+    collection: selectCollection(state.shop.params)(state),
   };
 };
+const mapDispatchToProps = (dispatch) => ({
+  changeParams: (item) => dispatch(changeShopParams(item)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionPage);
 
-export default connect(mapStateToProps)(CollectionPage);
+/*Explain how to extract data from params:
+1) Make shop params into redux with actions, type, payload, reducer...
+2) import useParams and useEffect from react to extract the params from URL...
+3) Make dispatch with payload of the param and save data from step 2 into shop reducer
+4) Make a selectCollection selector, inside we find the data with the id or route name or id that matches the passed params(URL)
+(collectionUrlParam) => {
+  return createSelector([selectShopItems], (collections) => {
+    return collections.find(
+      (collection) => collection.id === COLLECTION_ID_MAP[collectionUrlParam]
+    );
+  });
+**Remember to return of step 4, because in mapStateToProp, the selector return a function, that get called second time in mapStateToProp, and from that new function, we return the data that matches with passed parameter
+
+*/
