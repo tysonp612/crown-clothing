@@ -11,7 +11,6 @@ import { selectCartHidden } from "./../../redux/cart/cart.selector";
 import { selectCurrentUser } from "./../../redux/user/user.selector";
 
 const Header = ({ currentUser, cartToggleHidden }) => {
-  console.log(currentUser);
   return (
     <div className="header">
       <Link className="logo-container" to="/">

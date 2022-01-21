@@ -8,19 +8,24 @@ import CollectionItem from "../../components/collection-item/collection-item.com
 
 const CollectionPage = ({ match, collection, changeParams }) => {
   let params = useParams();
-  console.log(collection);
+  const { title, items } = collection;
+  console.log(items);
   useEffect(() => {
     changeParams(params.collectionId);
   });
   return (
-    <div className="category">
-      <h2>CATEGORY PAGE</h2>
+    <div className="collection-page">
+      <h2 className="title">{title}</h2>
+      <div className="items">
+        {items.map((item) => (
+          <CollectionItem key={item.id} item={item} />
+        ))}
+      </div>
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     //putting the (state) below is necessary because unlike other selectors, this selector needs a part of the state depending on the URL parameter
     collection: selectCollection(state.shop.params)(state),
