@@ -5,7 +5,7 @@ import { addItemsToCart } from "./../../redux/cart/cart.actions";
 import { connect } from "react-redux";
 //always have to destructure dispatch from redux and use it as a paremeter in used component
 const CollectionItem = ({ item, addItemsToCart }) => {
-  console.log(item);
+  // console.log(item);
   //destructure item object passed as prop from parent component
   const { name, price, imageUrl } = item;
   return (

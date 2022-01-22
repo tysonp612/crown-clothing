@@ -9,7 +9,7 @@ import CollectionItem from "../../components/collection-item/collection-item.com
 const CollectionPage = ({ match, collection, changeParams }) => {
   let params = useParams();
   const { title, items } = collection;
-  console.log(items);
+  // console.log(items);
   useEffect(() => {
     changeParams(params.collectionId);
   });
