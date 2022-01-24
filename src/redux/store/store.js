@@ -9,5 +9,5 @@ if (process.env.NODE_ENV === "development") {
 }
 const store = createStore(rootReducer, applyMiddleware(...middlewares)); //this will spread all the method, all the value in the array into the function call as individual arguments
 const persistor = persistStore(store);
-const test = "";
+const test = " Adding nrew branch for css style";
 export { store, persistor };
