@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { Switch, Route, Redirect } from "react-router-dom";
 import HomePage from "./pages/homepage/homepage.component";
 import CheckoutPage from "./pages/checkout/checkout.component";
