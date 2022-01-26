@@ -5,9 +5,7 @@ import {
   LogoContainer,
   OptionsContainer,
   OptionLink,
-  OptionDiv,
 } from "./header.styles.jsx";
-import { Link } from "react-router-dom";
 import { auth } from "./../../firebase/firebase.utils";
 import { connect } from "react-redux";
 import CartIcon from "./../cart-icon/cart-icon.component";
@@ -27,9 +25,9 @@ const Header = ({ currentUser, cartToggleHidden }) => {
         <OptionLink to="/shop">SHOP</OptionLink>
         <OptionLink to="/contact">CONTACT</OptionLink>
         {currentUser ? (
-          <OptionDiv onClick={() => auth.signOut(currentUser)}>
+          <OptionLink as="div" onClick={() => auth.signOut(currentUser)}>
             SIGN OUT
-          </OptionDiv>
+          </OptionLink>
         ) : (
           <OptionLink to="/signin">SIGN IN</OptionLink>
         )}

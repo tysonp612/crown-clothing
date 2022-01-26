@@ -7,16 +7,22 @@ import ShopPage from "./pages/shop/shop.component";
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import "./App.css";
 import Header from "./components/header/header.component";
-import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import {
+  auth,
+  createUserProfileDocument,
+  addCollectionAndDocuments,
+} from "./firebase/firebase.utils";
 import { onSnapshot } from "firebase/firestore";
 import { connect } from "react-redux";
 import setCurrentUser from "./redux/user/user.actions";
 import { selectCurrentUser } from "./redux/user/user.selector";
 import { createStructuredSelector } from "reselect";
+import { selectCollectionsForPreview } from "./redux/shop/shop.selector";
 class App extends React.Component {
   //this is open subscription between the app and firebase, we also have to unsubscribe to avoid memory leak
   unsubscribeFromAuth = null;
   componentDidMount() {
+    // const { collectionsArray } = this.props;
     //async await becasue we are waiting the result from createUserProfileDocument (must use or code get broken)
     //these line below is to listen to any change of auth sate, then setState of signned in user acorrdingly
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
@@ -33,6 +39,13 @@ class App extends React.Component {
         this.props.setCurrentUser(userAuth);
       }
     });
+    // addCollectionAndDocuments(
+    //   "collections",
+    //   //we only need the title and items to pass to firebase, other variables like id we want firebase to generate for us
+    //   collectionsArray.map(({ title, items }) => {
+    //     return { title, items };
+    //   })
+    // );
   }
 
   //   line 21: unsubscribeFromAuth is initialised as null
@@ -80,5 +93,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  collectionsArray: selectCollectionsForPreview,
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);

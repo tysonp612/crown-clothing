@@ -1,10 +1,11 @@
-import styled, { css } from "styled-components";
+// import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Link } from "react-router-dom";
 //css syntax allows us to write a block of css code that can pass in other block (like sass module)
-const OptionContainerStyles = css`
-  padding: 10px 15px;
-  cruisor: pointer;
-`;
+// const OptionContainerStyles = css`
+//   padding: 10px 15px;
+//   cruisor: pointer;
+// `;
 export const HeaderContainer = styled.div`
   height: 70px;
   width: 100%;
@@ -28,11 +29,12 @@ export const OptionsContainer = styled.div`
   cursor: pointer;
 `;
 export const OptionLink = styled(Link)`
-  ${OptionContainerStyles}
+  padding: 10px 15px;
+  cruisor: pointer;
 `;
-export const OptionDiv = styled.div`
-  ${OptionContainerStyles}
-`;
+// export const OptionDiv = styled.div`
+//   ${OptionContainerStyles}
+// `;
 /*
 .header {
   height: 70px;

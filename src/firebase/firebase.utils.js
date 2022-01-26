@@ -6,7 +6,14 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 
-import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  writeBatch,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB71nB1ahbQSm4uSEvs59Ff_fbj59m0v1I",
@@ -53,7 +60,25 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   //If user or snapshot has already existed, return User reference for future use
   return userRef;
 };
-
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  //in Database firestore, create a collection based on the key given
+  const collectionRef = collection(firestore, collectionKey);
+  console.log(collectionRef);
+  //because firebase only deal with 1 document per time, we make a group of document using batch
+  const batch = writeBatch(firestore);
+  //loop over objectsToAdd
+  objectsToAdd.forEach((obj) => {
+    //what this means is get the document from the collection, then generate ID based on title
+    const newDocRef = doc(collectionRef, obj.title);
+    //calling batch.set will group all the documents, and what we will pass is the docRef and the its obj
+    batch.set(newDocRef, obj);
+  });
+  //as we call commit, we are passing documents under "collections" into firebase, await meaning it return a promise
+  await batch.commit();
+};
 const provider = new GoogleAuthProvider();
 
 provider.setCustomParameters({ prompt: "select_account" }); //To popup signin prompt of Google, other options are available in documentation
