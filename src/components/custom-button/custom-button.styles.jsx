@@ -1,5 +1,15 @@
 import styled, { css } from "styled-components";
 
+const position = css`
+  width: 80%;
+  opacity: 0.7;
+  position: absolute;
+  top: 255px;
+  &:hover {
+    opacity: 0.85;
+    display: flex;
+  }
+`;
 const buttonStyles = css`
   background-color: black;
   color: white;
@@ -31,6 +41,11 @@ const googleSignInStyles = css`
   }
 `;
 
+const getButtonCheckoutStyles = (props) => {
+  if (props.position) {
+    return position;
+  }
+};
 const getButtonStyles = (props) => {
   if (props.isGoogleSignIn) {
     return googleSignInStyles;
@@ -53,6 +68,7 @@ export const CustomButtonContainer = styled.button`
   display: flex;
   justify-content: center;
   ${getButtonStyles}
+  ${getButtonCheckoutStyles}
 `;
 
 // .custom-button {

@@ -11,7 +11,8 @@ export const selectShopItems = createSelector(
 //Then we map through those keys to make an new array with the value of those keys in the begining object Array[{value of key 1},{value of key 2},{value of key 3}]
 export const selectCollectionsForPreview = createSelector(
   [selectShopItems],
-  (collections) => Object.keys(collections).map((key) => collections[key])
+  (collections) =>
+    collections ? Object.keys(collections).map((key) => collections[key]) : []
 );
 
 //This meaning that we pass a parameter in the selector, from the return collections (state.shopData)(ARRAY OF SHOP ITEMS),we find the item wich matches the routename with the paramater passed
