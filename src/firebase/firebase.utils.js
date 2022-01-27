@@ -66,18 +66,50 @@ export const addCollectionAndDocuments = async (
 ) => {
   //in Database firestore, create a collection based on the key given
   const collectionRef = collection(firestore, collectionKey);
-  console.log(collectionRef);
   //because firebase only deal with 1 document per time, we make a group of document using batch
   const batch = writeBatch(firestore);
   //loop over objectsToAdd
   objectsToAdd.forEach((obj) => {
     //what this means is get the document from the collection, then generate ID based on title
-    const newDocRef = doc(collectionRef, obj.title);
+    const newDocRef = doc(collectionRef);
     //calling batch.set will group all the documents, and what we will pass is the docRef and the its obj
     batch.set(newDocRef, obj);
   });
   //as we call commit, we are passing documents under "collections" into firebase, await meaning it return a promise
   await batch.commit();
+};
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+  //extracting querySnapshot array by collections.docs(docs is one of the child elem form collections aka snapshot object)
+  //, then for each of elem in snapshot array, we extract title and item from doc.data()
+  const transformedCollection = collections.docs.map((doc) => {
+    const { title, items } = doc.data();
+    //return a new array with objects containing data as below formats
+    return {
+      //encodeURI will transform string into a version that URL can read
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      items,
+      title,
+    };
+  });
+  console.log(transformedCollection);
+  //[{…}, {…}, {…}, {…}, {…}]
+  // 0:{routeName: 'hats', id: 'Hats', items: Array(9), title: 'Hats'}
+  // 1: {routeName: 'jackets', id: 'Jackets', items: Array(5), title: 'Jackets'}
+  // 2: {routeName: 'mens', id: 'Mens', items: Array(6), title: 'Mens'}
+  // 3: {routeName: 'sneakers', id: 'Sneakers', items: Array(8), title: 'Sneakers'}
+  // 4: {routeName: 'womens', id: 'Womens', items: Array(7), title: 'Womens'}
+
+  //1 pass in initial object {}
+  //2 object goes to the first collection elem, then set the first value to title in lowercase. ex: hats
+  //3 return {hats: hats collection} then the initial object goes to the next elem in collection array
+  //4 return { hats: hats collection,jackets: jackets collection}
+  //accumulator is an empty object
+  return transformedCollection.reduce((accumulator, collection) => {
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {});
 };
 const provider = new GoogleAuthProvider();
 
