@@ -18,6 +18,6 @@ export const selectCollectionsForPreview = createSelector(
 //This meaning that we pass a parameter in the selector, from the return collections (state.shopData)(ARRAY OF SHOP ITEMS),we find the item wich matches the routename with the paramater passed
 export const selectCollection = (collectionUrlParam) => {
   return createSelector([selectShopItems], (collections) => {
-    return collections[collectionUrlParam];
+    return collections ? collections[collectionUrlParam] : null;
   });
 };

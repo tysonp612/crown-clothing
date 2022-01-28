@@ -17,10 +17,13 @@ class ShopPage extends React.Component {
     const collectionRef = collection(firestore, "collections");
 
     //send us snapshot representing the code of collections array when code gets run on the first time
-    this.unsubscribeFromSnapshot = onSnapshot(collectionRef, (snapshot) => {
-      const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-      updateCollections(collectionsMap);
-    });
+    this.unsubscribeFromSnapshot = onSnapshot(
+      collectionRef,
+      async (snapshot) => {
+        const collectionsMap = await convertCollectionsSnapshotToMap(snapshot);
+        updateCollections(collectionsMap);
+      }
+    );
   }
   render() {
     const { match } = this.props;
