@@ -9,13 +9,18 @@ import { Route } from "react-router-dom";
 import CollectionOverview from "./../../components/collection-overview/collection-overview.component";
 import CollectionPage from "../collection/collection.component";
 import { updateCollections } from "./../../redux/shop/shop.actions";
-//HOC
-import WithSpinner from "./../../components/with-spinner/with-spinner.component";
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionOverview);
-const CollectionPageWithSpinner = WithSpinner(CollectionPage);
+//HOC (No need in this case, we only use loading ? <CollectionPage> : <Spinning>)
+// import WithSpinner from "./../../components/with-spinner/with-spinner.component";
+// const CollectionsOverviewWithSpinner = WithSpinner(CollectionOverview);
+// const CollectionPageWithSpinner = WithSpinner(CollectionPage);
+import {
+  SpinnerContainer,
+  SpinnerOverlay,
+} from "./../../components/with-spinner/with-spinner.styles";
+
 class ShopPage extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       loading: true,
     };
@@ -48,15 +53,28 @@ class ShopPage extends React.Component {
         <Route
           exact
           path={`${match.path}`}
-          render={(props) => (
-            <CollectionsOverviewWithSpinner isLoading={loading} {...props} />
-          )}
+          //Always have to remember to return from function or use short hand return
+          render={(props) => {
+            return loading ? (
+              <SpinnerOverlay>
+                <SpinnerContainer />
+              </SpinnerOverlay>
+            ) : (
+              <CollectionOverview {...props} />
+            );
+          }}
         />
         <Route
           path={`${match.path}/:collectionId`}
-          render={(props) => (
-            <CollectionPageWithSpinner isLoading={loading} {...props} />
-          )}
+          render={(props) =>
+            loading ? (
+              <SpinnerOverlay>
+                <SpinnerContainer />
+              </SpinnerOverlay>
+            ) : (
+              <CollectionPage {...props} />
+            )
+          }
         ></Route>
       </div>
     );
