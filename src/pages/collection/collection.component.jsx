@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import "./collection.styles.scss";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
-import { changeShopParams } from "./../../redux/shop/shop.actions";
+// import { useParams } from "react-router-dom";
+// import { changeShopParams } from "./../../redux/shop/shop.actions";
 import { selectCollection } from "./../../redux/shop/shop.selector";
 import CollectionItem from "../../components/collection-item/collection-item.component";
 
@@ -12,6 +12,7 @@ const CollectionPage = ({ collection, changeParams }) => {
   //   changeParams(params.collectionId);
   // });
   const { title, items } = collection;
+  console.log(collection);
   return (
     <div className="collection-page">
       <h2 className="title">{title}</h2>
