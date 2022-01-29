@@ -31,7 +31,16 @@ class ShopPage extends React.Component {
     //getting collecion "collections" references from firestore
     const collectionRef = collection(firestore, "collections");
 
+    //Promise pattern
+    // fetch(
+    //   "https://firestore.googleapis.com/v1/projects/crown-clothing-a1add/databases/(default)/documents/collections"
+    // )
+    //   .then((response) => response.json())
+    //   .then((collections) => console.log(collections));
+
     //send us snapshot representing the code of collections array when code gets run on the first time
+
+    //Observable pattern
     this.unsubscribeFromSnapshot = onSnapshot(
       collectionRef,
       async (snapshot) => {

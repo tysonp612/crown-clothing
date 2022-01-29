@@ -25,6 +25,9 @@ class App extends React.Component {
     // const { collectionsArray } = this.props;
     //async await becasue we are waiting the result from createUserProfileDocument (must use or code get broken)
     //these line below is to listen to any change of auth sate, then setState of signned in user acorrdingly
+
+    //We do not assign function auth.onAuthStateChanged to a this.unsubscribeFromAuth, we call auth.onAuthStateChanged() to subscribe and pass in a callback as argument, then we take what it returns and assign it to this.unsubscribeFromAuth¸
+    //when you call function, function will do something(subscribe)  and then return something(different function to unsubscribe)
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       //Check if there is any user signing in
       if (userAuth) {
