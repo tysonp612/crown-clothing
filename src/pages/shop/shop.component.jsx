@@ -24,6 +24,8 @@ import {
 
 class ShopPage extends React.Component {
   constructor(props) {
+    //IMPORTANT: Putting API request (fetching) in constructor is a bad pattern that are not recommended because it will cause all kind of different states to happend
+
     super(props);
     //No need to use state since we used asynchronously redux handler
     // this.state = {
