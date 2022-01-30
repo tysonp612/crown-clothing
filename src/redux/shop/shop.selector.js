@@ -21,3 +21,10 @@ export const selectCollection = (collectionUrlParam) => {
     return collections ? collections[collectionUrlParam] : null;
   });
 };
+
+//ASYNCHRONOUS REDUX HANDLE
+
+export const selectCollectionFetching = createSelector(
+  [selectShop],
+  (shop) => shop.isFetching
+);

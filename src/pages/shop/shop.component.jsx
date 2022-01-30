@@ -1,10 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import { onSnapshot, collection } from "firebase/firestore";
-import {
-  firestore,
-  convertCollectionsSnapshotToMap,
-} from "./../../firebase/firebase.utils";
+// import {
+//   firestore,
+//   convertCollectionsSnapshotToMap,
+// } from "./../../firebase/firebase.utils";
+import { fetchCollectionsStartAsync } from "./../../redux/shop/shop.actions";
+import { selectCollectionFetching } from "./../../redux/shop/shop.selector";
+
+import { createStructuredSelector } from "reselect";
 import { Route } from "react-router-dom";
 import CollectionOverview from "./../../components/collection-overview/collection-overview.component";
 import CollectionPage from "../collection/collection.component";
@@ -21,15 +25,16 @@ import {
 class ShopPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      loading: true,
-    };
+    //No need to use state since we used asynchronously redux handler
+    // this.state = {
+    //   loading: true,
+    // };
   }
-  unsubscribeFromSnapshot = null;
+  // unsubscribeFromSnapshot = null;
   componentDidMount() {
-    const { updateCollections } = this.props;
+    // const { updateCollections } = this.props;
     //getting collecion "collections" references from firestore
-    const collectionRef = collection(firestore, "collections");
+    // const collectionRef = collection(firestore, "collections");
 
     //Promise pattern
     // fetch(
@@ -37,24 +42,26 @@ class ShopPage extends React.Component {
     // )
     //   .then((response) => response.json())
     //   .then((collections) => console.log(collections));
-
     //send us snapshot representing the code of collections array when code gets run on the first time
 
     //Observable pattern
-    this.unsubscribeFromSnapshot = onSnapshot(
-      collectionRef,
-      async (snapshot) => {
-        const collectionsMap = await convertCollectionsSnapshotToMap(snapshot);
-        updateCollections(collectionsMap);
+    // this.unsubscribeFromSnapshot = onSnapshot(
+    //   collectionRef,
+    //   async (snapshot) => {
+    //     const collectionsMap = await convertCollectionsSnapshotToMap(snapshot);
+    //     updateCollections(collectionsMap);
+    //     this.setState({ loading: false });
+    //   }
+    // );
 
-        this.setState({ loading: false });
-      }
-    );
+    //ASYNC REDUX HANDLER pattern
+    const { fetchCollectionsStartAsync } = this.props;
+    fetchCollectionsStartAsync();
   }
   render() {
-    const { match } = this.props;
-    const { loading } = this.state;
-    console.log(loading);
+    const { match, isCollectionFetching } = this.props;
+    // const { loading } = this.state;
+
     //we get access to {match,location, history} becasue in App.js we wrap route between Shop (top level)
     return (
       <div className="shop-page">
@@ -64,7 +71,7 @@ class ShopPage extends React.Component {
           path={`${match.path}`}
           //Always have to remember to return from function or use short hand return
           render={(props) => {
-            return loading ? (
+            return isCollectionFetching ? (
               <SpinnerOverlay>
                 <SpinnerContainer />
               </SpinnerOverlay>
@@ -76,7 +83,7 @@ class ShopPage extends React.Component {
         <Route
           path={`${match.path}/:collectionId`}
           render={(props) =>
-            loading ? (
+            isCollectionFetching ? (
               <SpinnerOverlay>
                 <SpinnerContainer />
               </SpinnerOverlay>
@@ -89,12 +96,17 @@ class ShopPage extends React.Component {
     );
   }
 }
+const mapStateToProps = createStructuredSelector({
+  isCollectionFetching: selectCollectionFetching,
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateCollections: (collectionsMap) =>
-      dispatch(updateCollections(collectionsMap)),
+    // updateCollections: (collectionsMap) =>
+    //   dispatch(updateCollections(collectionsMap)),
+    //ASYNCHRONOUS REDUX HANDLE
+    fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync()),
   };
 };
 
-export default connect(null, mapDispatchToProps)(ShopPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ShopPage);
