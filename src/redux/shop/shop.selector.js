@@ -22,6 +22,13 @@ export const selectCollection = (collectionUrlParam) => {
   });
 };
 
+// Because render gets called first before data is fetched, so CollectionPage will get error getting title of null, so we make a new selector to check if there is any collection in shop.collections and return a boolean value, if no collection exists, it will render spinner
+export const selectIsCollectionsLoaded = createSelector(
+  [selectShop],
+  //short hand to convert a value into boolean (true or false)
+  (shop) => !!shop.collections
+);
+
 //ASYNCHRONOUS REDUX HANDLE
 
 export const selectCollectionFetching = createSelector(

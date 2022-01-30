@@ -6,7 +6,10 @@ import { onSnapshot, collection } from "firebase/firestore";
 //   convertCollectionsSnapshotToMap,
 // } from "./../../firebase/firebase.utils";
 import { fetchCollectionsStartAsync } from "./../../redux/shop/shop.actions";
-import { selectCollectionFetching } from "./../../redux/shop/shop.selector";
+import {
+  selectCollectionFetching,
+  selectIsCollectionsLoaded,
+} from "./../../redux/shop/shop.selector";
 
 import { createStructuredSelector } from "reselect";
 import { Route } from "react-router-dom";
@@ -61,7 +64,8 @@ class ShopPage extends React.Component {
     fetchCollectionsStartAsync();
   }
   render() {
-    const { match, isCollectionFetching } = this.props;
+    const { match, isCollectionFetching, isCollectionLoaded } = this.props;
+    console.log(isCollectionLoaded);
     // const { loading } = this.state;
 
     //we get access to {match,location, history} becasue in App.js we wrap route between Shop (top level)
@@ -85,7 +89,7 @@ class ShopPage extends React.Component {
         <Route
           path={`${match.path}/:collectionId`}
           render={(props) =>
-            isCollectionFetching ? (
+            !isCollectionLoaded ? (
               <SpinnerOverlay>
                 <SpinnerContainer />
               </SpinnerOverlay>
@@ -100,6 +104,7 @@ class ShopPage extends React.Component {
 }
 const mapStateToProps = createStructuredSelector({
   isCollectionFetching: selectCollectionFetching,
+  isCollectionLoaded: selectIsCollectionsLoaded,
 });
 
 const mapDispatchToProps = (dispatch) => {
