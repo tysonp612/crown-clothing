@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
 import "./collection.styles.scss";
 import { connect } from "react-redux";
-import { useParams } from "react-router-dom";
-import { changeShopParams } from "./../../redux/shop/shop.actions";
+// import { useParams } from "react-router-dom";
+// import { changeShopParams } from "./../../redux/shop/shop.actions";
 import { selectCollection } from "./../../redux/shop/shop.selector";
 import CollectionItem from "../../components/collection-item/collection-item.component";
 
-const CollectionPage = ({ match, collection, changeParams }) => {
-  let params = useParams();
+const CollectionPage = ({ collection, changeParams }) => {
+  // let params = useParams();
+  // useEffect(() => {
+  //   changeParams(params.collectionId);
+  // });
   const { title, items } = collection;
-  // console.log(items);
-  useEffect(() => {
-    changeParams(params.collectionId);
-  });
+  console.log(collection);
   return (
     <div className="collection-page">
       <h2 className="title">{title}</h2>
@@ -25,16 +25,16 @@ const CollectionPage = ({ match, collection, changeParams }) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return {
     //putting the (state) below is necessary because unlike other selectors, this selector needs a part of the state depending on the URL parameter
-    collection: selectCollection(state.shop.params)(state),
+    collection: selectCollection(ownProps.match.params.collectionId)(state),
   };
 };
-const mapDispatchToProps = (dispatch) => ({
-  changeParams: (item) => dispatch(changeShopParams(item)),
-});
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionPage);
+// const mapDispatchToProps = (dispatch) => ({
+//   changeParams: (item) => dispatch(changeShopParams(item)),
+// });
+export default connect(mapStateToProps)(CollectionPage);
 
 /*Explain how to extract data from params:
 1) Make shop params into redux with actions, type, payload, reducer...
