@@ -5,7 +5,7 @@ import { onSnapshot, collection } from "firebase/firestore";
 //   firestore,
 //   convertCollectionsSnapshotToMap,
 // } from "./../../firebase/firebase.utils";
-import { fetchCollectionsStartAsync } from "./../../redux/shop/shop.actions";
+import { fetchCollectionsStart } from "./../../redux/shop/shop.actions";
 import {
   selectCollectionFetching,
   selectIsCollectionsLoaded,
@@ -60,8 +60,8 @@ class ShopPage extends React.Component {
     // );
 
     //ASYNC REDUX HANDLER pattern
-    const { fetchCollectionsStartAsync } = this.props;
-    fetchCollectionsStartAsync();
+    const { fetchCollectionsStart } = this.props;
+    fetchCollectionsStart();
   }
   render() {
     const { match, isCollectionFetching, isCollectionLoaded } = this.props;
@@ -112,7 +112,7 @@ const mapDispatchToProps = (dispatch) => {
     // updateCollections: (collectionsMap) =>
     //   dispatch(updateCollections(collectionsMap)),
     //ASYNCHRONOUS REDUX HANDLE
-    fetchCollectionsStartAsync: () => dispatch(fetchCollectionsStartAsync()),
+    fetchCollectionsStart: () => dispatch(fetchCollectionsStart()),
   };
 };
 
