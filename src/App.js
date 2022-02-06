@@ -99,3 +99,4 @@ const mapStateToProps = createStructuredSelector({
   collectionsArray: selectCollectionsForPreview,
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);
+//Studying Redux Saga in theory
