@@ -13,6 +13,7 @@ import {
   auth,
   googleProvider,
   createUserProfileDocument,
+  getCurrentUser,
 } from "./../../firebase/firebase.utils";
 export function* signInWithGoogle() {
   try {
@@ -33,6 +34,7 @@ export function* onGoogleSignInStart() {
   yield takeLatest(UserActionTypes.GOOGLE_SIGN_IN_START, signInWithGoogle);
 }
 //It takes email and password to sign in, so we can destructure it like this with payload
+// the emailsigninstart is expecting a payload object, which can be anything you want.
 export function* signInWithEmail({ payload: { email, password } }) {
   try {
     const { user } = yield signInWithEmailAndPassword(auth, email, password);
@@ -48,6 +50,29 @@ export function* signInWithEmail({ payload: { email, password } }) {
 export function* onEmailSignInStart() {
   yield takeLatest(UserActionTypes.EMAIL_SIGN_IN_START, signInWithEmail);
 }
+
+export function* isUserAuthenticated() {
+  try {
+    const userAuth = yield getCurrentUser();
+    console.log(userAuth);
+    if (!userAuth) return;
+    const userRef = yield call(createUserProfileDocument, userAuth);
+    //make a snapshot of user object
+    const userSnapshot = yield getDoc(userRef);
+    yield put(googleSignInSuccess({ id: userSnapshot.id, ...userSnapshot }));
+  } catch (error) {
+    yield put(googleSignInFailure(error));
+  }
+}
+
+export function* onCheckUserSession() {
+  yield takeLatest(UserActionTypes.CHECK_USER_SESSION, isUserAuthenticated);
+}
+
 export function* userSagas() {
-  yield all([call(onGoogleSignInStart), call(onEmailSignInStart)]);
+  yield all([
+    call(onGoogleSignInStart),
+    call(onEmailSignInStart),
+    call(onCheckUserSession),
+  ]);
 }

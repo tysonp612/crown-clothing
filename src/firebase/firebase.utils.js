@@ -28,6 +28,17 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 //using async because we are making an API request
 
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    //by calling onAuthStateChanged, we are subcribing to the user that signed in
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      unsubscribe();
+      // By wrapping it in a promise, we return userAuth from getCurrentUser. not callback function from onAuthStateChanged as the resolved value of that promise when the asynchronous response is complete :)
+      resolve(userAuth);
+    }, reject);
+  });
+};
+
 export const auth = getAuth();
 export const firestore = getFirestore();
 export const createUserProfileDocument = async (userAuth, additionalData) => {
