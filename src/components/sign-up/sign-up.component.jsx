@@ -7,7 +7,8 @@ import {
 } from "./../../firebase/firebase.utils";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import "./sign-up.styles.scss";
-
+import { connect } from "react-redux";
+import { signUpStart } from "./../../redux/user/user.actions";
 class SignUp extends React.Component {
   constructor() {
     super();
@@ -26,32 +27,41 @@ class SignUp extends React.Component {
     e.preventDefault();
     //1 Check if password and confirm password are the same
     const { displayName, email, password, confirmPassword } = this.state;
+    const { signUpStart } = this.props;
     if (password !== confirmPassword) {
       alert("Your password and confirm password are not the same");
       return;
-    } else {
-      //2.if password is good, use createUserWithEmailAndPassword
-      try {
-        //create an user wuth auth.createUser of google auth
-        const { user } = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+      // } else {
+      //   //2.if password is good, use createUserWithEmailAndPassword
+      //   try {
+      //     //create an user wuth auth.createUser of google auth
+      //     const { user } = await createUserWithEmailAndPassword(
+      //       auth,
+      //       email,
+      //       password
+      //     );
 
-        //3.run create user profile to save user to DB
-        //use {displayName} to appear in user data
-        await createUserProfileDocument(user, { displayName });
-        //4. Set state to empty
-        this.setState({
-          displayName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        });
-      } catch (error) {
-        alert(error.message);
-      }
+      //     //3.run create user profile to save user to DB
+      //     //use {displayName} to appear in user data
+      //     await createUserProfileDocument(user, { displayName });
+      //     //4. Set state to empty
+      //     this.setState({
+      //       displayName: "",
+      //       email: "",
+      //       password: "",
+      //       confirmPassword: "",
+      //     });
+      //   } catch (error) {
+      //     alert(error.message);
+      //   }
+    } else {
+      signUpStart(displayName, email, password);
+      this.setState({
+        displayName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
     }
   };
   render() {
@@ -101,4 +111,9 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+const mapDispatchToProps = (dispatch) => ({
+  signUpStart: (displayName, email, password) => {
+    return dispatch(signUpStart({ displayName, email, password }));
+  },
+});
+export default connect(null, mapDispatchToProps)(SignUp);

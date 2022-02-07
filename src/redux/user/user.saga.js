@@ -7,8 +7,14 @@ import {
   emailSignInFailure,
   signOutSuccess,
   signOutFailure,
+  signUpSuccess,
+  signUpFailure,
 } from "./user.actions";
-import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 import { getDoc } from "firebase/firestore";
 
 import {
@@ -56,7 +62,6 @@ export function* onEmailSignInStart() {
 export function* isUserAuthenticated() {
   try {
     const userAuth = yield getCurrentUser();
-    console.log(userAuth);
     if (!userAuth) return;
     const userRef = yield call(createUserProfileDocument, userAuth);
     //make a snapshot of user object
@@ -83,11 +88,34 @@ export function* signOut() {
 export function* onSignOutStart() {
   yield takeLatest(UserActionTypes.SIGN_OUT_START, signOut);
 }
+
+///SIGN UP
+
+export function* signUp({
+  payload: { displayName, email, password, confirmPassword },
+}) {
+  try {
+    const { user } = yield createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const userRef = yield createUserProfileDocument(user, { displayName });
+    const userSnapshot = yield getDoc(userRef);
+    yield put(signUpSuccess({ id: userSnapshot.id, ...userSnapshot }));
+  } catch (error) {
+    yield put(signUpFailure(error));
+  }
+}
+export function* onSignUpStart() {
+  yield takeLatest(UserActionTypes.SIGN_UP_START, signUp);
+}
 export function* userSagas() {
   yield all([
     call(onGoogleSignInStart),
     call(onEmailSignInStart),
     call(onCheckUserSession),
     call(onSignOutStart),
+    call(onSignUpStart),
   ]);
 }
