@@ -5,6 +5,8 @@ import {
   googleSignInFailure,
   emailSignInSuccess,
   emailSignInFailure,
+  signOutSuccess,
+  signOutFailure,
 } from "./user.actions";
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { getDoc } from "firebase/firestore";
@@ -69,10 +71,23 @@ export function* onCheckUserSession() {
   yield takeLatest(UserActionTypes.CHECK_USER_SESSION, isUserAuthenticated);
 }
 
+export function* signOut() {
+  try {
+    yield auth.signOut();
+    yield put(signOutSuccess());
+  } catch (error) {
+    yield put(signOutFailure(error));
+  }
+}
+
+export function* onSignOutStart() {
+  yield takeLatest(UserActionTypes.SIGN_OUT_START, signOut);
+}
 export function* userSagas() {
   yield all([
     call(onGoogleSignInStart),
     call(onEmailSignInStart),
     call(onCheckUserSession),
+    call(onSignOutStart),
   ]);
 }

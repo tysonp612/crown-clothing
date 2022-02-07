@@ -13,9 +13,10 @@ import { ReactComponent as Logo } from "./../../assets/crown.svg"; //This is a n
 import CartDropdown from "./../cart-dropdown/cart-dropdown.component";
 import { createStructuredSelector } from "reselect";
 import { selectCartHidden } from "./../../redux/cart/cart.selector";
+import { signOutStart } from "./../../redux/user/user.actions";
 import { selectCurrentUser } from "./../../redux/user/user.selector";
 
-const Header = ({ currentUser, cartToggleHidden }) => {
+const Header = ({ currentUser, cartToggleHidden, signOutStart }) => {
   return (
     <HeaderContainer>
       <LogoContainer to="/">
@@ -25,7 +26,7 @@ const Header = ({ currentUser, cartToggleHidden }) => {
         <OptionLink to="/shop">SHOP</OptionLink>
         <OptionLink to="/contact">CONTACT</OptionLink>
         {currentUser ? (
-          <OptionLink as="div" onClick={() => auth.signOut(currentUser)}>
+          <OptionLink as="div" onClick={signOutStart}>
             SIGN OUT
           </OptionLink>
         ) : (
@@ -44,5 +45,8 @@ const mapStateToProps = createStructuredSelector({
   cartToggleHidden: selectCartHidden,
 });
 
+const mapDispatchToProps = (dispatch) => {
+  return { signOutStart: () => dispatch(signOutStart()) };
+};
 //We have to connect Prop to the Component which receive state as prop, initially we pass state as prop to Header in App.js, but with redux, we don't pass anything as prop in parent component, we directly connect in child component
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
