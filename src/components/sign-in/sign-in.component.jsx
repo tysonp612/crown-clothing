@@ -78,6 +78,11 @@ class SignIn extends React.Component {
     );
   }
 }
+// Ollie, this is ES6 object property shorthand.
+// In sign-in.component.jsx:
+// mapDispatchToProps emailSignInStart: (email, password) => dispatch(emailSignInStart({ email, password }))
+// is equivalent to
+// mapDispatchToProps emailSignInStart: (email, password) => dispatch(emailSignInStart({ email: email, password: password }))
 const mapDispatchToProps = (dispatch) => ({
   googleSignInStart: () => dispatch(googleSignInStart()),
   emailSignInStart: (email, password) =>

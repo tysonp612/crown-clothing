@@ -26,8 +26,11 @@ const firebaseConfig = {
 };
 
 initializeApp(firebaseConfig);
-//using async because we are making an API request
 
+//using async because we are making an API request
+// firebase take care of the persistence for you, it store the token in indexdb
+// https://firebase.google.com/docs/auth/web/auth-state-persistence
+// since firebase automatically log you in when the app start(because firebase is persistence by default), onAuthStateChange run its call back again upon user login, which change the currentUser state
 export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
     //by calling onAuthStateChanged, we are subcribing to the user that signed in
