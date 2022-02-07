@@ -1,8 +1,14 @@
 import { takeLatest, put, all, call } from "redux-saga/effects";
 import { UserActionTypes } from "./user.types";
-import { googleSignInSuccess, googleSignInFailure } from "./user.actions";
-import { signInWithPopup } from "firebase/auth";
+import {
+  googleSignInSuccess,
+  googleSignInFailure,
+  emailSignInSuccess,
+  emailSignInFailure,
+} from "./user.actions";
+import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { getDoc } from "firebase/firestore";
+
 import {
   auth,
   googleProvider,
@@ -26,7 +32,22 @@ export function* onGoogleSignInStart() {
   //As Sign In component get dispatch from redux, it will call the action start in user.action, then that action will trigger this saga
   yield takeLatest(UserActionTypes.GOOGLE_SIGN_IN_START, signInWithGoogle);
 }
-
+//It takes email and password to sign in, so we can destructure it like this with payload
+export function* signInWithEmail({ payload: { email, password } }) {
+  try {
+    const { user } = yield signInWithEmailAndPassword(auth, email, password);
+    //import create profile from firebase .util, call this to create profile if user is not recognized
+    const userRef = yield call(createUserProfileDocument, user);
+    //make a snapshot of user object
+    const userSnapshot = yield getDoc(userRef);
+    yield put(emailSignInSuccess({ id: userSnapshot.id, ...userSnapshot }));
+  } catch (error) {
+    yield put(emailSignInFailure(error));
+  }
+}
+export function* onEmailSignInStart() {
+  yield takeLatest(UserActionTypes.EMAIL_SIGN_IN_START, signInWithEmail);
+}
 export function* userSagas() {
-  yield all([call(onGoogleSignInStart)]);
+  yield all([call(onGoogleSignInStart), call(onEmailSignInStart)]);
 }
