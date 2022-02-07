@@ -93,7 +93,7 @@ export const convertCollectionsSnapshotToMap = (collections) => {
       title,
     };
   });
-  console.log(transformedCollection);
+
   //[{…}, {…}, {…}, {…}, {…}]
   // 0:{routeName: 'hats', id: 'Hats', items: Array(9), title: 'Hats'}
   // 1: {routeName: 'jackets', id: 'Jackets', items: Array(5), title: 'Jackets'}
@@ -111,8 +111,8 @@ export const convertCollectionsSnapshotToMap = (collections) => {
     return accumulator;
   }, {});
 };
-const provider = new GoogleAuthProvider();
+export const googleProvider = new GoogleAuthProvider();
 
-provider.setCustomParameters({ prompt: "select_account" }); //To popup signin prompt of Google, other options are available in documentation
+googleProvider.setCustomParameters({ prompt: "select_account" }); //To popup signin prompt of Google, other options are available in documentation
 
-export const signInWithGoogle = () => signInWithPopup(auth, provider);
+// export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
