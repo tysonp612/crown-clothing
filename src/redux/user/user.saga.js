@@ -91,9 +91,7 @@ export function* onSignOutStart() {
 
 ///SIGN UP
 
-export function* signUp({
-  payload: { displayName, email, password, confirmPassword },
-}) {
+export function* signUp({ payload: { displayName, email, password } }) {
   try {
     const { user } = yield createUserWithEmailAndPassword(
       auth,

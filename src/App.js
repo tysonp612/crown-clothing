@@ -102,3 +102,5 @@ const mapStateToProps = createStructuredSelector({
 });
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 //Studying Redux Saga in theory
+
+//Feb09/22 Study React Hooks (theory)
