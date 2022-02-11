@@ -1,6 +1,7 @@
 import React from "react";
 // import styled from "styled-components";
 import { Switch, Route, Redirect } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import HomePage from "./pages/homepage/homepage.component";
 import CheckoutPage from "./pages/checkout/checkout.component";
 import ShopPage from "./pages/shop/shop.component";
