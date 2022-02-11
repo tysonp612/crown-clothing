@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { onSnapshot, collection } from "firebase/firestore";
 // import {
@@ -25,83 +25,88 @@ import {
   SpinnerOverlay,
 } from "./../../components/with-spinner/with-spinner.styles";
 
-class ShopPage extends React.Component {
-  constructor(props) {
-    //IMPORTANT: Putting API request (fetching) in constructor is a bad pattern that are not recommended because it will cause all kind of different states to happend
+const ShopPage = ({
+  fetchCollectionsStart,
+  isCollectionFetching,
+  isCollectionLoaded,
+  match,
+}) => {
+  // constructor(props) {
+  //   //IMPORTANT: Putting API request (fetching) in constructor is a bad pattern that are not recommended because it will cause all kind of different states to happend
 
-    super(props);
-    //No need to use state since we used asynchronously redux handler
-    // this.state = {
-    //   loading: true,
-    // };
-  }
+  //   super(props);
+  //   //No need to use state since we used asynchronously redux handler
+  //   // this.state = {
+  //   //   loading: true,
+  //   // };
+  // }
   // unsubscribeFromSnapshot = null;
-  componentDidMount() {
-    // const { updateCollections } = this.props;
-    //getting collecion "collections" references from firestore
-    // const collectionRef = collection(firestore, "collections");
 
-    //Promise pattern
-    // fetch(
-    //   "https://firestore.googleapis.com/v1/projects/crown-clothing-a1add/databases/(default)/documents/collections"
-    // )
-    //   .then((response) => response.json())
-    //   .then((collections) => console.log(collections));
-    //send us snapshot representing the code of collections array when code gets run on the first time
+  // const { updateCollections } = this.props;
+  //getting collecion "collections" references from firestore
+  // const collectionRef = collection(firestore, "collections");
 
-    //Observable pattern
-    // this.unsubscribeFromSnapshot = onSnapshot(
-    //   collectionRef,
-    //   async (snapshot) => {
-    //     const collectionsMap = await convertCollectionsSnapshotToMap(snapshot);
-    //     updateCollections(collectionsMap);
-    //     this.setState({ loading: false });
-    //   }
-    // );
+  //Promise pattern
+  // fetch(
+  //   "https://firestore.googleapis.com/v1/projects/crown-clothing-a1add/databases/(default)/documents/collections"
+  // )
+  //   .then((response) => response.json())
+  //   .then((collections) => console.log(collections));
+  //send us snapshot representing the code of collections array when code gets run on the first time
 
-    //ASYNC REDUX HANDLER pattern
-    const { fetchCollectionsStart } = this.props;
+  //Observable pattern
+  // this.unsubscribeFromSnapshot = onSnapshot(
+  //   collectionRef,
+  //   async (snapshot) => {
+  //     const collectionsMap = await convertCollectionsSnapshotToMap(snapshot);
+  //     updateCollections(collectionsMap);
+  //     this.setState({ loading: false });
+  //   }
+  // );
+
+  //ASYNC REDUX HANDLER pattern
+  useEffect(() => {
     fetchCollectionsStart();
-  }
-  render() {
-    const { match, isCollectionFetching, isCollectionLoaded } = this.props;
-    console.log(isCollectionLoaded);
-    // const { loading } = this.state;
+  }, [fetchCollectionsStart]);
 
-    //we get access to {match,location, history} becasue in App.js we wrap route between Shop (top level)
-    return (
-      <div className="shop-page">
-        {/* We use match.path is because we don't want to hard code /shop/... and it makes it more flexible if we want to reuse it in another place */}
-        <Route
-          exact
-          path={`${match.path}`}
-          //Always have to remember to return from function or use short hand return
-          render={(props) => {
-            return isCollectionFetching ? (
-              <SpinnerOverlay>
-                <SpinnerContainer />
-              </SpinnerOverlay>
-            ) : (
-              <CollectionOverview {...props} />
-            );
-          }}
-        />
-        <Route
-          path={`${match.path}/:collectionId`}
-          render={(props) =>
-            !isCollectionLoaded ? (
-              <SpinnerOverlay>
-                <SpinnerContainer />
-              </SpinnerOverlay>
-            ) : (
-              <CollectionPage {...props} />
-            )
-          }
-        ></Route>
-      </div>
-    );
-  }
-}
+  // const { match, isCollectionFetching, isCollectionLoaded } = this.props;
+  // console.log(isCollectionLoaded);
+  // const { loading } = this.state;
+
+  //we get access to {match,location, history} becasue in App.js we wrap route between Shop (top level)
+  return (
+    <div className="shop-page">
+      {/* We use match.path is because we don't want to hard code /shop/... and it makes it more flexible if we want to reuse it in another place */}
+      <Route
+        exact
+        path={`${match.path}`}
+        //Always have to remember to return from function or use short hand return
+        render={(props) => {
+          return isCollectionFetching ? (
+            <SpinnerOverlay>
+              <SpinnerContainer />
+            </SpinnerOverlay>
+          ) : (
+            <CollectionOverview {...props} />
+          );
+        }}
+      />
+      <Route
+        path={`${match.path}/:collectionId`}
+        render={(props) =>
+          !isCollectionLoaded ? (
+            <SpinnerOverlay>
+              <SpinnerContainer />
+            </SpinnerOverlay>
+          ) : (
+            <CollectionPage {...props} />
+          )
+        }
+      ></Route>
+    </div>
+  );
+};
+
 const mapStateToProps = createStructuredSelector({
   isCollectionFetching: selectCollectionFetching,
   isCollectionLoaded: selectIsCollectionsLoaded,
