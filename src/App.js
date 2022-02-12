@@ -20,11 +20,14 @@ import { selectCurrentUser } from "./redux/user/user.selector";
 import { createStructuredSelector } from "reselect";
 import { selectCollectionsForPreview } from "./redux/shop/shop.selector";
 
-const App = ({ checkUserSession, currentUser }) => {
+const App = () => {
   //USING HOOKS
+  const currentUser = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
+  // const checkUserSessionHandler = () => dispatch(checkUserSession);
   useEffect(() => {
-    checkUserSession();
-  }, [checkUserSession]);
+    dispatch(checkUserSession());
+  }, [dispatch]);
   //this is open subscription between the app and firebase, we also have to unsubscribe to avoid memory leak
   // unsubscribeFromAuth = null;
   // componentDidMount() {
@@ -91,16 +94,16 @@ const App = ({ checkUserSession, currentUser }) => {
   );
 };
 //Set a function to props to replace setState
-const mapDispatchToProps = (dispatch) => {
-  return {
-    checkUserSession: () => dispatch(checkUserSession()),
-  };
-};
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-  collectionsArray: selectCollectionsForPreview,
-});
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     checkUserSession: () => dispatch(checkUserSession()),
+//   };
+// };
+// const mapStateToProps = createStructuredSelector({
+//   currentUser: selectCurrentUser,
+//   collectionsArray: selectCollectionsForPreview,
+// });
+export default App;
 //Studying Redux Saga in theory
 
 //Feb09/22 Study React Hooks (theory)

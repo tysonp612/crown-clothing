@@ -2,13 +2,16 @@ import "./cart-dropdown.styles.scss";
 import React from "react";
 import CustomButton from "./../custom-button/custom-button.component";
 import CartItem from "./../cart-item/cart-item.component";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectCartItems } from "./../../redux/cart/cart.selector";
 import { createStructuredSelector } from "reselect";
-import { withRouter } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { toggleCartDropDown } from "./../../redux/cart/cart.actions";
 //if we don't want to set up map dispatch to props, an easier way is to pass "dispatch" in the parameter
-const CartDropdown = ({ items, history, dispatch }) => {
+const CartDropdown = () => {
+  const items = useSelector(selectCartItems);
+  const dispatch = useDispatch();
+  const history = useHistory();
   return (
     <div className="cart-dropdown">
       <div className="cart-items">
@@ -35,8 +38,8 @@ const CartDropdown = ({ items, history, dispatch }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  items: selectCartItems,
-});
+// const mapStateToProps = createStructuredSelector({
+//   items: selectCartItems,
+// });
 //using withRouter as higher function that take another function as parameter, we can have assess from history prop, and cartItems
-export default withRouter(connect(mapStateToProps)(CartDropdown));
+export default CartDropdown;

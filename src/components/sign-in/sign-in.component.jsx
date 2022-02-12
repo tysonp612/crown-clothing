@@ -9,7 +9,7 @@ import {
 } from "./../../redux/user/user.actions";
 // import { signInWithEmailAndPassword } from "firebase/auth";
 
-const SignIn = (emailSignInStart, googleSignInStart) => {
+const SignIn = ({ emailSignInStart, googleSignInStart }) => {
   const [userCredentials, setCredentials] = useState({
     email: "",
     password: "",
